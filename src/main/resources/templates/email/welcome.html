@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Selamat Datang</title>
+    <style>
+        body { margin:0; padding:0; background:#f4f4f5; font-family: 'Helvetica Neue', Arial, sans-serif; }
+        .wrapper { max-width:600px; margin:32px auto; background:#ffffff; border-radius:12px; overflow:hidden; border:1px solid #e4e4e7; }
+        .header { background:#1a1a2e; padding:32px; text-align:center; }
+        .header h1 { color:#ffffff; margin:0; font-size:22px; font-weight:600; letter-spacing:0.5px; }
+        .body { padding:40px 32px; }
+        .body h2 { color:#18181b; font-size:20px; margin:0 0 12px; }
+        .body p { color:#52525b; font-size:15px; line-height:1.7; margin:0 0 16px; }
+        .btn { display:inline-block; background:#1a1a2e; color:#ffffff !important; padding:12px 28px; border-radius:8px; text-decoration:none; font-size:14px; font-weight:600; margin-top:8px; }
+        .divider { border:none; border-top:1px solid #f4f4f5; margin:32px 0; }
+        .footer { padding:0 32px 32px; text-align:center; }
+        .footer p { color:#a1a1aa; font-size:12px; line-height:1.6; margin:0; }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="header">
+        <h1 th:text="${appName}">JobPortal</h1>
+    </div>
+    <div class="body">
+        <h2>Halo, <span th:text="${customerName}">Johan</span>! 👋</h2>
+        <p>Selamat datang! Akun kamu telah berhasil dibuat. Kami senang kamu bergabung bersama kami.</p>
+        <p>Mulai jelajahi fitur-fitur yang tersedia dan nikmati pengalaman terbaik bersama kami.</p>
+        <a href="#" class="btn">Mulai Sekarang</a>
+        <hr class="divider"/>
+        <p style="font-size:13px;">Jika kamu tidak merasa mendaftar, abaikan email ini.</p>
+    </div>
+    <div class="footer">
+        <p th:text="${appName + ' · Semua hak dilindungi'}">JobPortal · Semua hak dilindungi</p>
+    </div>
+</div>
+</body>
+</html>

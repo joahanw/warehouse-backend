@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="X-UA-Compatible"
+          content="IE=edge">
+
+    <title>Pembayaran Berhasil</title>
+
+    <style>
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            margin:0;
+            padding:0;
+            background:#f6f8fb;
+            font-family:Arial,Helvetica,sans-serif;
+            color:#041627;
+        }
+
+        table{
+            border-collapse:collapse;
+        }
+
+        img{
+            border:0;
+            display:block;
+            max-width:100%;
+        }
+
+        a{
+            text-decoration:none;
+        }
+
+        .wrapper{
+            width:100%;
+            padding:32px 12px;
+            background:#f6f8fb;
+        }
+
+        .container{
+            width:100%;
+            max-width:620px;
+            margin:0 auto;
+            background:#ffffff;
+            border:1px solid #dde2ea;
+            border-radius:14px;
+            overflow:hidden;
+        }
+
+        /* ================= HEADER ================= */
+
+        .header{
+
+            background:#041627;
+            padding:22px 30px;
+
+        }
+
+        .header-table{
+
+            width:100%;
+
+        }
+
+        .brand{
+
+            font-size:22px;
+            color:#ffffff;
+            font-weight:bold;
+            letter-spacing:.3px;
+
+        }
+
+        .brand small{
+
+            font-size:15px;
+
+        }
+
+        .order-box{
+
+            display:inline-block;
+            background:rgba(255,255,255,.08);
+            border:1px solid rgba(255,255,255,.12);
+            border-radius:8px;
+            padding:8px 14px;
+            text-align:right;
+
+        }
+
+        .order-title{
+
+            font-size:10px;
+            color:#AAB7C7;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            margin:0;
+
+        }
+
+        .order-value{
+
+            margin-top:4px;
+            color:#ffffff;
+            font-size:13px;
+            font-weight:bold;
+
+        }
+
+        /* ================= HERO ================= */
+
+        .hero{
+
+            padding:40px 40px 35px;
+            text-align:center;
+            border-bottom:1px solid #eef1f5;
+
+        }
+
+        .success-circle{
+
+            width:74px;
+            height:74px;
+            line-height:74px;
+            margin:0 auto 20px;
+            border-radius:50%;
+            background:#22c55e;
+            color:#ffffff;
+            font-size:34px;
+            font-weight:bold;
+
+        }
+
+        .hero-title{
+
+            margin:0;
+            font-size:30px;
+            color:#041627;
+            font-weight:700;
+
+        }
+
+        .hero-description{
+
+            margin:18px auto 0;
+            max-width:430px;
+            font-size:15px;
+            line-height:1.8;
+            color:#5d6979;
+
+        }
+
+        .content{
+
+            padding:35px;
+
+        }
+
+        /* ================= CARD ================= */
+
+        .card{
+
+            border:1px solid #dde2ea;
+            border-radius:10px;
+            overflow:hidden;
+            margin-bottom:22px;
+
+        }
+
+        .card-header{
+
+            background:#f8faff;
+            padding:14px 20px;
+            border-bottom:1px solid #dde2ea;
+
+        }
+
+        .card-title{
+
+            margin:0;
+            font-size:12px;
+            color:#556070;
+            text-transform:uppercase;
+            letter-spacing:1px;
+            font-weight:bold;
+
+        }
+
+        .card-body{
+
+            padding:20px;
+
+        }
+
+        .label{
+
+            color:#707b8d;
+            font-size:13px;
+
+        }
+
+        .value{
+
+            color:#041627;
+            font-size:14px;
+            font-weight:600;
+
+        }
+
+        .divider{
+
+            border:none;
+            border-top:1px solid #edf0f5;
+            margin:16px 0;
+
+        }
+
+        .price{
+            font-size: 14px;
+            font-weight:bold;
+            color:#041627;
+
+        }
+
+        .total{
+
+            font-size:15px;
+            font-weight:bold;
+            color:#041627;
+
+        }
+
+        .footer{
+
+            background:#f8faff;
+            border-top:1px solid #dde2ea;
+            text-align:center;
+            padding:22px;
+            font-size:12px;
+            color:#707b8d;
+
+        }
+
+        .button{
+
+            display:inline-block;
+            background:#041627;
+            color:#ffffff !important;
+            padding:14px 28px;
+            border-radius:8px;
+            font-size:14px;
+            font-weight:bold;
+
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media screen and (max-width:620px){
+
+            .wrapper{
+
+                padding:0;
+
+            }
+
+            .container{
+
+                border-radius:0;
+                border-left:none;
+                border-right:none;
+
+            }
+
+            .header{
+
+                padding:20px;
+
+            }
+
+            .header-table td{
+
+                display:block;
+                width:100%;
+                text-align:center !important;
+
+            }
+
+            .order-box{
+
+                margin-top:16px;
+                text-align:center;
+
+            }
+
+            .hero{
+
+                padding:30px 20px;
+
+            }
+
+            .hero-title{
+
+                font-size:24px;
+
+            }
+
+            .hero-description{
+
+                font-size:14px;
+
+            }
+
+            .content{
+
+                padding:18px;
+
+            }
+
+            .card-body{
+
+                padding:18px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <div class="container">
+
+        <!-- ================= HEADER ================= -->
+
+        <div class="header">
+
+            <table class="header-table">
+
+                <tr>
+
+                    <td>
+
+                        <div class="brand">
+
+                            🥐 BakedByErina.
+
+                        </div>
+
+                    </td>
+
+                    <td align="right">
+
+                        <div class="order-box">
+
+                            <p class="order-title">
+
+                                Order ID
+
+                            </p>
+
+                            <p class="order-value"
+                               th:text="${orderId}">
+
+                                ORDER-1720000572123-1
+
+                            </p>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+        <!-- ================= HERO ================= -->
+
+        <div class="hero">
+
+            <div class="success-circle">
+
+                ✓
+
+            </div>
+
+            <h1 class="hero-title">
+
+                Pembayaran Berhasil
+
+            </h1>
+
+            <p class="hero-description">
+
+                Halo
+                <strong th:text="${customerName}">
+                    Johan
+                </strong>,
+
+                <br><br>
+
+                Terima kasih telah melakukan pembayaran.
+
+                Pembayaran Anda telah berhasil kami terima dan pesanan sedang kami siapkan.
+
+            </p>
+
+        </div>
+
+        <div class="content">
+
+            <!-- PAYMENT INFORMATION -->
+            <!-- ================= PAYMENT INFORMATION ================= -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <p class="card-title">
+
+                        Informasi Pembayaran
+
+                    </p>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table width="100%">
+
+                        <tr>
+
+                            <td class="label">
+                                Invoice ID
+                            </td>
+
+                            <td align="right"
+                                class="value"
+                                th:text="${invoiceId}">
+                                INV-20260707-0001
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <hr class="divider">
+                            </td>
+                        </tr>
+
+                        <tr>
+
+                            <td class="label">
+                                Metode Pembayaran
+                            </td>
+
+                            <td align="right"
+                                class="value"
+                                th:text="${paymentMethod}">
+                                QRIS
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <hr class="divider">
+                            </td>
+                        </tr>
+
+                        <tr>
+
+                            <td class="label">
+                                Tanggal Pembayaran
+                            </td>
+
+                            <td align="right"
+                                class="value"
+                                th:text="${paidAt}">
+                                07 Juli 2026
+                            </td>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="2">
+                                <hr class="divider">
+                            </td>
+                        </tr>
+
+                        <tr>
+
+                            <td class="label">
+                                Status
+                            </td>
+
+                            <td align="right">
+
+                    <span style="
+                        display:inline-block;
+                        background:#22c55e;
+                        color:#ffffff;
+                        padding:6px 14px;
+                        border-radius:999px;
+                        font-size:12px;
+                        font-weight:bold;">
+
+                        LUNAS
+
+                    </span>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- ================= ORDER SUMMARY ================= -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <p class="card-title">
+
+                        Ringkasan Pesanan
+
+                    </p>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table width="100%">
+
+                        <tr th:each="item : ${items}">
+
+                            <td style="padding:12px 0;border-bottom:1px solid #edf0f5;">
+
+                                <div style="font-size:13px;
+                                font-weight:600;
+                                color:#041627;"
+                                     th:text="${item.productName()}">
+
+                                    Original Salt Bread
+
+                                </div>
+
+                                <div style="
+                        margin-top:4px;
+                        font-size:12px;
+                        color:#707b8d;">
+
+                                    Qty :
+                                    <span th:text="${item.quantity()}">
+
+                            2
+
+                        </span>
+
+                                </div>
+
+                            </td>
+
+                            <td align="right"
+                                style="padding:12px 0;
+                           border-bottom:1px solid #edf0f5;">
+
+                    <span class="price"
+                          th:text="${item.subTotal()}">
+
+                        Rp48.000
+
+                    </span>
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                    <table width="100%"
+                           style="margin-top:18px;">
+
+                        <tr>
+
+                            <td class="label">
+
+                                Subtotal
+
+                            </td>
+
+                            <td align="right"
+                                class="value"
+                                th:text="${subTotal}">
+
+                                Rp96.000
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td class="label"
+                                style="padding-top:10px;">
+
+                                Ongkos Kirim
+
+                            </td>
+
+                            <td align="right"
+                                class="value"
+                                style="padding-top:10px;"
+                                th:text="${shippingCost}">
+
+                                Rp15.000
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td colspan="2">
+
+                                <hr class="divider">
+
+                            </td>
+
+                        </tr>
+
+                        <tr>
+
+                            <td class="total">
+
+                                Total Pembayaran
+
+                            </td>
+
+                            <td align="right"
+                                class="total"
+                                th:text="${grandTotal}">
+
+                                Rp111.000
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- SHIPPING ADDRESS -->
+            <!-- ================= SHIPPING ADDRESS ================= -->
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    <p class="card-title">
+
+                        Alamat Pengiriman
+
+                    </p>
+
+                </div>
+
+                <div class="card-body">
+
+                    <table width="100%">
+                        <tr>
+
+                            <td style="line-height:1.8;
+                           color:#5d6979;
+                           font-size:14px;"
+                                th:text="${address}">
+
+                                Jl. Senopati No.88
+                                Jakarta Selatan
+                                Indonesia
+
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+
+        <div class="footer">
+
+            <div style="
+        font-size:15px;
+        font-weight:bold;
+        color:#041627;
+        margin-bottom:10px;">
+
+                🥐 BakedByErina.
+
+            </div>
+
+            <div style="
+        line-height:1.8;">
+
+                Email ini dikirim secara otomatis,
+                mohon untuk tidak membalas email ini.
+
+            </div>
+
+            <div style="
+        margin-top:16px;
+        font-size:11px;
+        color:#9aa5b5;">
+
+                © 2026 BakedByErina.
+                All Rights Reserved.
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

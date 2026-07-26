@@ -93,6 +93,8 @@ public class UserService implements IUserService {
         User updated = userMapper.mapRequestToEntity(userRequest);
         if (null == userRequest.password()){
             updated.setPassword(user.getPassword());
+        }else {
+            updated.setPassword(passwordEncoder.encode(userRequest.password()));
         }
         updated.setId(id);
         updated.setRoles(user.getRoles());
@@ -164,8 +166,10 @@ public class UserService implements IUserService {
             if (userRequest.email().equalsIgnoreCase(user.getEmail())) violation.put("email","Email already exists");
             if (userRequest.phone().equalsIgnoreCase(user.getPhone())) violation.put("phone","Phone already exists");
         }
-        var decision = compromisedPasswordChecker.check(userRequest.password());
-        if (decision.isCompromised()) violation.put("password", "Password compromised, choose a stronger password");
+        if (null != userRequest.password()){
+            var decision = compromisedPasswordChecker.check(userRequest.password());
+            if (decision.isCompromised()) violation.put("password", "Password compromised, choose a stronger password");
+        }
         if (!violation.isEmpty()) throw new CustomException(HttpStatus.BAD_REQUEST,
                 String.format(AppConstant.Error.TITLE_BAD_REQUEST, "User"),
                 String.format(AppConstant.Error.MESSAGE_BAD_REQUEST, "User", violation),

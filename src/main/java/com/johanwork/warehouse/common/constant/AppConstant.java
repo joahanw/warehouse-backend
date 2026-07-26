@@ -34,7 +34,7 @@ public class AppConstant {
         public static final String MESSAGE_TOKEN_EXPIRED = "Token has expired, please login again";
 
         public static final String TITLE_FAILED_UPLOAD = "FAILED UPLOAD";
-        public static final String MESSAGE_FAILED_UPLOAD = "Failed to upload file in supabase";
+        public static final String MESSAGE_FAILED_UPLOAD = "Failed to upload file in Oracle Object Storage";
 
         public static final String TITLE_WAREHOUSE_CANNOT_DELETE = "WAREHOUSE CANNOT BE DELETED";
         public static final String MESSAGE_WAREHOUSE_CANNOT_DELETE = "Warehouse still contains products";

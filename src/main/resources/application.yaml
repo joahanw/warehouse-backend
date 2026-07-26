@@ -50,9 +50,10 @@ oci:
     region: ${OCI_OBJECTSTORAGE_REGION:ap-batam-1}
     bucket: ${OCI_OBJECTSTORAGE_BUCKET:bakedbyerina}
     authType: ${OCI_CONFIG_AUTH_TYPE:CONFIG_FILE}
+    bucketPublic: ${OCI_OBJECTSTORAGE_BUCKET_PUBLIC:true}
 
 cors:
-  allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,https://admin.bakedbyerina.com,https://bakedbyerina.com}
   allowedMethods: ${CORS_ALLOWED_METHODS:*}
   allowedHeaders: ${CORS_ALLOWED_HEADERS:*}
   allowedCredentials: ${CORS_ALLOWED_CREDENTIALS:true}

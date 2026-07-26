@@ -130,6 +130,10 @@ public class UserService implements IUserService {
         ) ;
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "role-list", allEntries = true),
+            @CacheEvict(value = "roles", allEntries = true)
+    })
     @Transactional
     @Override
     public GenericResponse<Void> assignUserToRole(Long userId, Long roleId) {
@@ -138,6 +142,10 @@ public class UserService implements IUserService {
         return userMapper.mapToGenericResponse(String.format(AppConstant.Success.CREATED, "User Roles"));
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "role-list", allEntries = true),
+            @CacheEvict(value = "roles", allEntries = true)
+    })
     @Transactional
     @Override
     public GenericResponse<Void> updateUserRole(Long userId, Long roleId, Long assignedRoleId) {

@@ -10,3 +10,7 @@ spring:
 midtrans:
   isProduction: true
 
+oci:
+  config:
+    authType: INSTANCE_PRINCIPAL
+

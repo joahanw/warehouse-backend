@@ -34,4 +34,5 @@ build/
 
 docker-compose.yml
 logs
-vps
+vps/*
+docker-compose-vps.yml

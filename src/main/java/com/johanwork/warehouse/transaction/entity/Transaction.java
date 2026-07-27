@@ -37,8 +37,9 @@ import java.util.Set;
         SELECT new com.johanwork.warehouse.transaction.dto.response.DashboardStatsByMerchantResponse(
              COALESCE(SUM(t.grandTotal), 0),
             COUNT(t.id),
-            (SELECT COALESCE(SUM(tp.quantity), 0)
-             FROM TransactionProduct tp),
+           (SELECT COALESCE(SUM(tp.quantity), 0)
+             FROM TransactionProduct tp JOIN tp.transaction t
+             WHERE t.paymentStatus='success'),
              1L,
              "0"
         )FROM Transaction t
@@ -52,7 +53,8 @@ import java.util.Set;
         COALESCE(SUM(t.grandTotal), 0),
         COUNT(t.id),
         (SELECT COALESCE(SUM(tp.quantity), 0)
-             FROM TransactionProduct tp),
+             FROM TransactionProduct tp JOIN tp.transaction t
+             WHERE t.paymentStatus='success'),
         t.merchant.id,
         t.merchant.name
     )FROM Transaction t

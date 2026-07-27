@@ -22,8 +22,8 @@ public class MidtransRestClientConfig {
                 .encodeToString((props.serverKey() + ":").getBytes(StandardCharsets.UTF_8));
 
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setConnectTimeout(Duration.ofSeconds(5));
-        factory.setReadTimeout(Duration.ofSeconds(10));
+        factory.setConnectTimeout(Duration.ofSeconds(20));
+        factory.setReadTimeout(Duration.ofSeconds(20));
 
         return RestClient.builder()
                 .baseUrl(props.baseUrl())

@@ -35,9 +35,8 @@ public class CaffeineCacheConfig {
 
                 cache("warehouse-product-list", 1000, 60),
                 cache("warehouses-product", 1000, 120),
-                cache("warehouse-product-by-warehouse-id", 1000, 120),
-                cache("warehouse-product-by-warehouse-id-and-product-id", 1000, 120),
-
+                cache("warehouses-product-by-warehouse-id", 1000, 120),
+                cache("warehouses-product-by-warehouse-id-and-product-id", 1000, 120),
 
                 cache("merchant-list", 50, 180),
                 cache("merchants", 50, 360),

@@ -17,6 +17,12 @@ import java.util.Optional;
 public interface MerchantProductRepository extends JpaRepository<MerchantProduct, Long> ,
         JpaSpecificationExecutor<MerchantProduct> {
 
+    @EntityGraph(attributePaths = {
+            "merchant",
+            "product",
+            "product.category",
+            "warehouse"
+    })
     Page<MerchantProduct> findAll(
             Specification<MerchantProduct> spec,
             Pageable pageable

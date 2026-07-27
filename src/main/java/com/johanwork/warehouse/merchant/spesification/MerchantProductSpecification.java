@@ -20,12 +20,6 @@ public final class MerchantProductSpecification {
             Long productId
     ){
         return (root, query, cb) -> {
-            query.distinct(true);
-
-            root.fetch("merchant", JoinType.LEFT);
-            Fetch<MerchantProduct, Product> productFetch = root.fetch("product", JoinType.LEFT);
-            productFetch.fetch("category", JoinType.LEFT);
-            root.fetch("warehouse", JoinType.LEFT);
 
             List<Predicate> predicates = new ArrayList<>();
 

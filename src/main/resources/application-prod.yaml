@@ -6,6 +6,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  mail:
+    host: live.smtp.mailtrap.io
+    port: 587
 
 midtrans:
   isProduction: true

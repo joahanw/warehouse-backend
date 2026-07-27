@@ -2,7 +2,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: false
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
@@ -11,9 +11,11 @@ spring:
     port: 587
 
 midtrans:
-  isProduction: true
+#  isProduction: true
+  isProduction: false
 
 oci:
   config:
     authType: INSTANCE_PRINCIPAL
+
 

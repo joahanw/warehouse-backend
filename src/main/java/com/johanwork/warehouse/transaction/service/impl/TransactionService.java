@@ -25,6 +25,8 @@ import com.johanwork.warehouse.transaction.spesification.TransactionSpecificatio
 import com.johanwork.warehouse.user.entity.User;
 import com.johanwork.warehouse.user.service.IUserDomainService;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -250,11 +252,22 @@ public class TransactionService implements ITransactionService {
                 .onStatus(HttpStatusCode::isError, (req, res) -> {
                     String body = new String(res.getBody().readAllBytes(), StandardCharsets.UTF_8);
                     log.error("Something wrong with requested Midtrans Body   : {}", body);
+                    log.error("Midtrans charge request payload for orderId={} : {}",
+                            transaction.getOrderId(), writePayloadAsJson(payload));
                     throw new CustomException(HttpStatus.BAD_REQUEST,
                             AppConstant.Error.TITLE_QRIS_CHARGE_FAILED,
                             AppConstant.Error.MESSAGE_QRIS_CHARGE_FAILED);
                 })
                 .body(QrisChargeResponse.class);
+    }
+
+    private String writePayloadAsJson(QrisChargeRequest payload) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            return objectMapper.writeValueAsString(payload);
+        } catch (JsonProcessingException e) {
+            return "<failed to serialize payload: " + e.getMessage() + ">";
+        }
     }
 
     // Build transaction items from Request to TransactionProduct

@@ -5,7 +5,7 @@ spring:
   application:
     name: warehouse
   profiles:
-    active: ${PROFILES:dev}
+    active: ${PROFILES:prod}
   datasource:
     url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:warehouse}
     username: ${DB_USERNAME:postgres}
@@ -64,8 +64,6 @@ logging:
     console: ${CONSOLE_LOG_PATTERN:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %cyan(%msg%n)}
 
 management:
-  server:
-    port: 8000
   endpoint:
     health:
       show-details: ALWAYS

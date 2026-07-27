@@ -47,16 +47,18 @@
         <!-- ===================== -->
         <!-- Root Logger -->
         <!-- ===================== -->
-        <root level="ERROR">
+        <root level="INFO">
             <appender-ref ref="RollingFile"/>
+            <appender-ref ref="Console"/>
         </root>
         <!-- ===================== -->
         <!-- Application-specific ERROR logs -->
         <!-- ===================== -->
         <logger name="com.johanwork.warehouse"
-                level="ERROR"
+                level="INFO"
                 additivity="false">
             <appender-ref ref="RollingFile"/>
+            <appender-ref ref="Console"/>
         </logger>
     </springProfile>
 

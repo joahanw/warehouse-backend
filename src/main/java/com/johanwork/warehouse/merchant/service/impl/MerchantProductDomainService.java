@@ -8,7 +8,9 @@ import com.johanwork.warehouse.merchant.service.IMerchantDomainService;
 import com.johanwork.warehouse.merchant.service.IMerchantProductDomainService;
 import com.johanwork.warehouse.product.service.IProductDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,10 @@ public class MerchantProductDomainService implements IMerchantProductDomainServi
     private final IProductDomainService productService;
     private final IMerchantDomainService merchantService;
 
+    @Caching(evict = {
+            @CacheEvict(value = "merchant-list", allEntries = true),
+            @CacheEvict(value = "merchants", allEntries = true)
+    })
     @Transactional
     @Override
     public void reduceMerchantProductStock(Long merchantId, Long productId, Long quantity) {

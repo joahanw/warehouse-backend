@@ -120,7 +120,7 @@ public class WarehouseProductService implements IWarehouseProductService
             @CacheEvict(value = "warehouse-product-list", allEntries = true),
             @CacheEvict(value = "warehouses-product-by-warehouse-id-and-product-id", allEntries = true),
             @CacheEvict(value = "warehouses-product", allEntries = true),
-            @CacheEvict(value = "warehouse-product-by-warehouse-id", allEntries = true)
+            @CacheEvict(value = "warehouses-product-by-warehouse-id", allEntries = true)
     })
     @Transactional
     @Override
@@ -148,7 +148,7 @@ public class WarehouseProductService implements IWarehouseProductService
             @CacheEvict(value = "warehouse-product-list", allEntries = true),
             @CacheEvict(value = "warehouses-product-by-warehouse-id-and-product-id", allEntries = true),
             @CacheEvict(value = "warehouses-product", allEntries = true),
-            @CacheEvict(value = "warehouse-product-by-warehouse-id", allEntries = true)
+            @CacheEvict(value = "warehouses-product-by-warehouse-id", allEntries = true)
     })
     @Transactional
     @Override
@@ -179,7 +179,7 @@ public class WarehouseProductService implements IWarehouseProductService
             @CacheEvict(value = "warehouse-product-list", allEntries = true),
             @CacheEvict(value = "warehouses-product-by-warehouse-id-and-product-id", allEntries = true),
             @CacheEvict(value = "warehouses-product", allEntries = true),
-            @CacheEvict(value = "warehouse-product-by-warehouse-id", allEntries = true)
+            @CacheEvict(value = "warehouses-product-by-warehouse-id", allEntries = true)
     })
     @Transactional
     @Override
@@ -195,7 +195,7 @@ public class WarehouseProductService implements IWarehouseProductService
             @CacheEvict(value = "warehouse-product-list", allEntries = true),
             @CacheEvict(value = "warehouses-product-by-warehouse-id-and-product-id", allEntries = true),
             @CacheEvict(value = "warehouses-product", allEntries = true),
-            @CacheEvict(value = "warehouse-product-by-warehouse-id", allEntries = true)
+            @CacheEvict(value = "warehouses-product-by-warehouse-id", allEntries = true)
     })
     @Transactional
     @Override

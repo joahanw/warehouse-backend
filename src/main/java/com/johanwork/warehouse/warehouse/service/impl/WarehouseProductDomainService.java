@@ -6,7 +6,9 @@ import com.johanwork.warehouse.warehouse.entity.WarehouseProduct;
 import com.johanwork.warehouse.warehouse.repository.WarehouseProductRepository;
 import com.johanwork.warehouse.warehouse.service.IWarehouseProductDomainService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,6 +50,12 @@ public class WarehouseProductDomainService implements IWarehouseProductDomainSer
                 ));
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "warehouse-product-list", allEntries = true),
+            @CacheEvict(value = "warehouses-product-by-warehouse-id-and-product-id", allEntries = true),
+            @CacheEvict(value = "warehouses-product", allEntries = true),
+            @CacheEvict(value = "warehouses-product-by-warehouse-id", allEntries = true)
+    })
     @Transactional
     @Override
     public void rebalanceQuantityStock(Long warehouseId, Long productId, int quantity, String status) {

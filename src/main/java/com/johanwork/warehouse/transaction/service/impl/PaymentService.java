@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +37,7 @@ public class PaymentService implements IPaymentService {
     private final ITelegramService telegramService;
     private final IMerchantProductDomainService merchantProductDomainService;
 
+    @Transactional
     @Override
     public void handleMidtransHookPayment(MidtransNotification req) {
         // Verifikasi signature SHA-512
@@ -56,15 +58,33 @@ public class PaymentService implements IPaymentService {
                         String.format(AppConstant.Error.MESSAGE_NOT_FOUND,"Transaction", req.orderId())
                 ));
 
-        PaymentStatus paymentStatus = resolvePaymentStatus(req.transactionStatus());
+        PaymentStatus incomingStatus = resolvePaymentStatus(req.transactionStatus());
+
+        if (incomingStatus == null) {
+            log.warn("Unhandled transaction_status={} for orderId={}, notification ignored",
+                    req.transactionStatus(), req.orderId());
+            return;
+        }
+
+        if (transaction.getPaymentStatus() == incomingStatus) {
+            log.info("Duplicate notification ignored: orderId={}, status={} already applied",
+                    req.orderId(), incomingStatus);
+            return;
+        }
+
+        if (transaction.getPaymentStatus() == PaymentStatus.success) {
+            log.warn("Notification ignored: orderId={} already marked success, incoming status={}",
+                    req.orderId(), incomingStatus);
+            return;
+        }
 
         // Update status
-        transaction.setPaymentStatus(paymentStatus);
+        transaction.setPaymentStatus(incomingStatus);
         transaction.setFraudStatus(resolveFraudStatus(req.fraudStatus()));
         transaction.setTransactionCode(req.transactionId());
         transactionRepository.save(transaction);
 
-        if (paymentStatus.name().equals("success")){
+        if (incomingStatus == PaymentStatus.success){
             transaction.getTransactionProducts().forEach(tp -> {
                 merchantProductDomainService.reduceMerchantProductStock(transaction.getMerchant().getId(),
                         tp.getProduct().getId(),

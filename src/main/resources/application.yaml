@@ -68,7 +68,7 @@ whatsapp:
     payment-created: payment_created_v1
 
 waha:
-  api-base-url: http://localhost:3000
+  api-base-url: ${WAHA_BASE_URL:http://localhost:3000}
   api-key: ${WAHA_API_KEY_PLAIN}
   session: erina
   enable: ture

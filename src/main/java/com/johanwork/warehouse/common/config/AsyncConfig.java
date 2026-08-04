@@ -21,4 +21,17 @@ public class AsyncConfig {
         return executor;
     }
 
+    @Bean(name = "wahaExecutor")
+    public TaskExecutor wahaExecutor(){
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(1);
+        executor.setMaxPoolSize(1);
+        executor.setQueueCapacity(200);
+        executor.setThreadNamePrefix("wa-");
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(30);
+        executor.initialize();
+        return executor;
+    }
+
 }

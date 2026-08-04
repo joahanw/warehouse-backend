@@ -1,5 +1,6 @@
 package com.johanwork.warehouse.transaction.dto.request;
 
+import com.johanwork.warehouse.transaction.dto.PaymentMethod;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -10,6 +11,9 @@ import java.util.List;
 public record TransactionRequest(
         @NotNull(message = "Merchant ID is required")
         Long merchantId,
+
+        // Optional: "qris" (Midtrans, default) or "bca_qris_static"
+        String paymentMethod,
 
         @NotBlank(message = "Name is required")
         String name,

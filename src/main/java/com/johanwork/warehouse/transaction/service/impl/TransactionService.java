@@ -1,16 +1,25 @@
 package com.johanwork.warehouse.transaction.service.impl;
 
+import tools.jackson.databind.ObjectMapper;
+import com.johanwork.warehouse.common.config.configProps.BcaQrisProperties;
 import com.johanwork.warehouse.common.constant.AppConstant;
 import com.johanwork.warehouse.common.exception.CustomException;
 import com.johanwork.warehouse.common.response.GenericResponse;
 import com.johanwork.warehouse.common.response.PageResponse;
+import com.johanwork.warehouse.common.util.QrCodeImageGenerator;
+import com.johanwork.warehouse.common.util.QrisUtil;
 import com.johanwork.warehouse.merchant.entity.Merchant;
 import com.johanwork.warehouse.merchant.service.IMerchantDomainService;
 import com.johanwork.warehouse.notification.dto.PaymentPendingDto;
+import com.johanwork.warehouse.notification.dto.WhatsAppTemplate;
+import com.johanwork.warehouse.notification.entity.NotificationOutbox;
+import com.johanwork.warehouse.notification.repository.NotificationOutboxRepository;
 import com.johanwork.warehouse.notification.service.INotificationService;
+import com.johanwork.warehouse.notification.service.impl.WhatsAppService;
 import com.johanwork.warehouse.product.entity.Product;
 import com.johanwork.warehouse.product.service.IProductDomainService;
 import com.johanwork.warehouse.transaction.dto.PaymentMethod;
+import com.johanwork.warehouse.transaction.dto.request.ConfirmPaymentRequest;
 import com.johanwork.warehouse.transaction.dto.request.ProductItems;
 import com.johanwork.warehouse.transaction.dto.request.QrisChargeRequest;
 import com.johanwork.warehouse.transaction.dto.request.TransactionRequest;
@@ -20,13 +29,13 @@ import com.johanwork.warehouse.transaction.entity.TransactionProduct;
 import com.johanwork.warehouse.transaction.mapper.TransactionMapper;
 import com.johanwork.warehouse.transaction.repository.TransactionProductRepository;
 import com.johanwork.warehouse.transaction.repository.TransactionRepository;
+import com.johanwork.warehouse.transaction.service.IPaymentService;
 import com.johanwork.warehouse.transaction.service.ITransactionService;
 import com.johanwork.warehouse.transaction.spesification.TransactionSpecification;
 import com.johanwork.warehouse.user.entity.User;
 import com.johanwork.warehouse.user.service.IUserDomainService;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +57,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +68,9 @@ import static com.johanwork.warehouse.common.util.AppUtil.*;
 @Slf4j
 public class TransactionService implements ITransactionService {
 
+    @Value("${app.baseUrl}")
+    private String baseUrl;
+
     private final TransactionRepository transactionRepository;
     private final TransactionMapper transactionMapper;
     private final IMerchantDomainService merchantService;
@@ -66,6 +79,11 @@ public class TransactionService implements ITransactionService {
     private final TransactionProductRepository transactionProductRepository;
     private final RestClient midtransRestClient;
     private final INotificationService notificationService;
+    private final WhatsAppService whatsAppService;
+    private final BcaQrisProperties bcaQrisProperties;
+    private final IPaymentService paymentService;
+    private final NotificationOutboxRepository notificationOutboxRepository;
+    private final ObjectMapper objectMapper;
 
     public TransactionService(TransactionRepository transactionRepository,
                               TransactionMapper transactionMapper,
@@ -74,7 +92,12 @@ public class TransactionService implements ITransactionService {
                               TransactionProductRepository transactionProductRepository,
                               @Qualifier("midtransRestClient") RestClient midtransRestClient,
                               INotificationService notificationService,
-                              IUserDomainService userService) {
+                              IUserDomainService userService,
+                              WhatsAppService whatsAppService,
+                              BcaQrisProperties bcaQrisProperties,
+                              IPaymentService paymentService,
+                              NotificationOutboxRepository notificationOutboxRepository,
+                              ObjectMapper objectMapper) {
         this.transactionRepository = transactionRepository;
         this.transactionMapper = transactionMapper;
         this.merchantService = merchantService;
@@ -83,6 +106,11 @@ public class TransactionService implements ITransactionService {
         this.midtransRestClient = midtransRestClient;
         this.notificationService = notificationService;
         this.userService = userService;
+        this.whatsAppService = whatsAppService;
+        this.bcaQrisProperties = bcaQrisProperties;
+        this.paymentService = paymentService;
+        this.notificationOutboxRepository = notificationOutboxRepository;
+        this.objectMapper = objectMapper;
     }
 
     @Value("${transaction.taxRate}")
@@ -107,20 +135,6 @@ public class TransactionService implements ITransactionService {
 
     }
 
-//    @Override
-//    public GenericResponse<DashboardStatsByMerchantResponse> getDashboardStatsByMerchant(String email, Long merchantId) {
-//        Merchant merchant = merchantService.findMerchantById(merchantId);
-//        if (!merchant.getKeeper().getEmail().equals(email)) {
-//            throw new CustomException(HttpStatus.FORBIDDEN,
-//                    AppConstant.Error.TITLE_FORBIDDEN,
-//                    AppConstant.Error.MESSAGE_FORBIDDEN);
-//        }
-//        return transactionMapper.mapToDashboardStatsByMerchantResponse(
-//                transactionRepository.getDashboardStatsByMerchant(merchantId),
-//                String.format(AppConstant.Success.FETCHED, "Dashboard stats for Merchant")
-//        );
-//    }
-
     @Transactional
     @Override
     public GenericResponse<CreateTransactionResponse> create(TransactionRequest rq) {
@@ -139,20 +153,59 @@ public class TransactionService implements ITransactionService {
         items.forEach(item -> item.setTransaction(saved));
         transactionProductRepository.saveAll(items);
 
-        // Charge to Midtrans
-        QrisChargeResponse qrisResponse = chargerQris(saved, items);
-        Instant expiryTime = parseExpiry(qrisResponse.expiryTime());
+        String qrCodeUrl;
+        String expiryTimeDisplay;
+        Instant expiryTime;
 
-        saved.setTransactionCode(qrisResponse.transactionId());
-        saved.setExpiredAt(expiryTime);
+        if (saved.getPaymentMethod() == PaymentMethod.bca_qris_static) {
+            expiryTime = Instant.now().plus(5, ChronoUnit.HOURS);
+            String dynamicQris = QrisUtil.injectDynamicAmount(bcaQrisProperties.staticCode(), grandTotal);
 
-        notificationService.sendPaymentPendingEmail(
-                saved.getEmail(),
-                mapToPaymentPendingDto( items, saved, qrisResponse.qrCodeUrl(), expiryTime)
-        );
+            saved.setPaymentCode(dynamicQris);
+            saved.setTransactionCode(orderId);
+            saved.setExpiredAt(expiryTime);
+
+            qrCodeUrl = baseUrl + "/api/transactions/" + saved.getId() + "/qr-image";
+            expiryTimeDisplay = formatExpiry(expiryTime);
+        } else {
+            QrisChargeResponse qrisResponse = chargerQris(saved, items);
+            expiryTime = parseExpiry(qrisResponse.expiryTime());
+
+            saved.setTransactionCode(qrisResponse.transactionId());
+            saved.setExpiredAt(expiryTime);
+
+            qrCodeUrl = qrisResponse.qrCodeUrl();
+            expiryTimeDisplay = qrisResponse.expiryTime();
+        }
+
+
+        if (rq.phone().isBlank()){
+            notificationService.sendPaymentPendingEmail(
+                    saved.getEmail(),
+                    mapToPaymentPendingDto(items, saved, qrCodeUrl, expiryTime)
+            );
+        }else {
+            var params = List.of(saved.getName(),
+                    saved.getOrderId(), formatCurrency(saved.getSubTotal()), formatExpiry(expiryTime));
+            notificationOutboxRepository.save(new NotificationOutbox(
+                    saved.getPhone(),
+                    WhatsAppTemplate.PAYMENT_CREATED_V1,
+                    toJson(params),
+                    qrCodeUrl
+                    )
+            );
+//            whatsAppService.sendPaymentCreated(
+//                    saved.getPhone(),
+//                    qrCodeUrl,
+//                    saved.getTransactionCode(),
+//                    saved.getName(),
+//                    grandTotal.toString(),
+//                    expiryTime.toString()
+//            );
+        }
 
         return transactionMapper.mapToCreateTransactionResponse(
-                saved.getId(), orderId, qrisResponse.qrCodeUrl(), qrisResponse.expiryTime(), grandTotal
+                saved.getId(), orderId, qrCodeUrl, expiryTimeDisplay, grandTotal
                 ,String.format(AppConstant.Success.FETCHED, "Transaction")
         );
     }
@@ -172,11 +225,63 @@ public class TransactionService implements ITransactionService {
         return transactionMapper.mapToPageTransactionResponse(transactions, String.format(AppConstant.Success.FETCHED, "Transaction"));
     }
 
+    @Override
+    public byte[] getQrImage(Long transactionId) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new CustomException(
+                        HttpStatus.NOT_FOUND,
+                        String.format(AppConstant.Error.TITLE_NOT_FOUND, "Transaction"),
+                        String.format(AppConstant.Error.MESSAGE_NOT_FOUND, "Transaction", transactionId)
+                ));
+
+        if (transaction.getPaymentCode() == null || transaction.getPaymentCode().isBlank()) {
+            throw new CustomException(
+                    HttpStatus.BAD_REQUEST,
+                    AppConstant.Error.TITLE_QR_IMAGE_UNAVAILABLE,
+                    AppConstant.Error.MESSAGE_QR_IMAGE_UNAVAILABLE
+            );
+        }
+
+        return QrCodeImageGenerator.generatePng(transaction.getPaymentCode(), 400);
+    }
+
+    @Transactional
+    @Override
+    public GenericResponse<Void> confirmPayment(Long transactionId, ConfirmPaymentRequest rq, String requesterEmail) {
+        Transaction transaction = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new CustomException(
+                        HttpStatus.NOT_FOUND,
+                        String.format(AppConstant.Error.TITLE_NOT_FOUND, "Transaction"),
+                        String.format(AppConstant.Error.MESSAGE_NOT_FOUND, "Transaction", transactionId)
+                ));
+
+        User requester = userService.findByEmail(requesterEmail);
+        boolean isManager = requester.getRoles().stream()
+                .anyMatch(role -> role.getName().equalsIgnoreCase(AppConstant.Role.MANAGER));
+        boolean isMerchantKeeper = transaction.getMerchant().getKeeper().getId().equals(requester.getId());
+
+        if (!isManager && !isMerchantKeeper) {
+            throw new CustomException(HttpStatus.FORBIDDEN,
+                    AppConstant.Error.TITLE_FORBIDDEN,
+                    AppConstant.Error.MESSAGE_FORBIDDEN);
+        }
+
+        paymentService.confirm(transaction, rq.status(), null, transaction.getTransactionCode());
+
+        return new GenericResponse<>(null, String.format(AppConstant.Success.UPDATED, "Payment status"));
+    }
+
     private Instant parseExpiry(String expiryTime) {
         if (expiryTime == null) return null;
         return LocalDateTime.parse(expiryTime.trim(),
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 .toInstant(ZoneOffset.of("+07:00"));
+    }
+
+    private String formatExpiry(Instant expiryTime) {
+        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                .withZone(ZoneOffset.of("+07:00"))
+                .format(expiryTime);
     }
 
     private PaymentPendingDto mapToPaymentPendingDto(List<TransactionProduct> tp, Transaction tx, String qr, Instant expiryTime){
@@ -241,7 +346,7 @@ public class TransactionService implements ITransactionService {
                 ),
                 itemDetails,
                 new QrisChargeRequest.CustomExpiry(
-                        24,
+                        5,
                         "hour"
                 )
         );
@@ -265,7 +370,7 @@ public class TransactionService implements ITransactionService {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             return objectMapper.writeValueAsString(payload);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return "<failed to serialize payload: " + e.getMessage() + ">";
         }
     }
@@ -284,4 +389,14 @@ public class TransactionService implements ITransactionService {
         }).toList();
     }
 
+    private String toJson(List<String> params){
+        try {
+            return objectMapper.writeValueAsString(params);
+        }catch (Exception ex){
+            log.error("Failed to serialize params: {}", ex.getMessage());
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                    AppConstant.Error.TITLE_INTERNAL_SERVER_ERROR,
+                    AppConstant.Error.MESSAGE_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

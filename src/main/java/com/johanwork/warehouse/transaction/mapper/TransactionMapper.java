@@ -39,8 +39,19 @@ public class TransactionMapper {
         tx.setGrandTotal(grandTotal);
         tx.setShippingCost(rq.shippingCost());
         tx.setPaymentStatus(PaymentStatus.pending);
-        tx.setPaymentMethod(PaymentMethod.qris);
+        tx.setPaymentMethod(resolvePaymentMethod(rq.paymentMethod()));
         return tx;
+    }
+
+    private PaymentMethod resolvePaymentMethod(String paymentMethod) {
+        if (paymentMethod == null || paymentMethod.isBlank()) {
+            return PaymentMethod.qris;
+        }
+        try {
+            return PaymentMethod.valueOf(paymentMethod.trim());
+        } catch (IllegalArgumentException e) {
+            return PaymentMethod.qris;
+        }
     }
 
     public TransactionResponse entityToResponse(Transaction transaction, boolean includeTransactionProducts){

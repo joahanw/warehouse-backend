@@ -1,5 +1,6 @@
 package com.johanwork.warehouse.transaction.dto;
 
 public enum PaymentMethod {
-    qris
+    qris,
+    bca_qris_static
 }

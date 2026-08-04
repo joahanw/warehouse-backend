@@ -2,6 +2,7 @@ package com.johanwork.warehouse.transaction.controller;
 
 import com.johanwork.warehouse.common.response.GenericResponse;
 import com.johanwork.warehouse.common.response.PageResponse;
+import com.johanwork.warehouse.transaction.dto.request.ConfirmPaymentRequest;
 import com.johanwork.warehouse.transaction.dto.request.TransactionRequest;
 import com.johanwork.warehouse.transaction.dto.response.*;
 import com.johanwork.warehouse.transaction.service.ITransactionProductService;
@@ -9,6 +10,7 @@ import com.johanwork.warehouse.transaction.service.ITransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -58,6 +60,21 @@ public class TransactionController {
     public ResponseEntity<GenericResponse<CreateTransactionResponse>> createTransactionProduct(@RequestBody @Valid TransactionRequest request){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(transactionService.create(request));
+    }
+
+    @GetMapping(path = "/{transactionId}/qr-image")
+    public ResponseEntity<byte[]> getQrImage(@PathVariable Long transactionId){
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(transactionService.getQrImage(transactionId));
+    }
+
+    @PostMapping(path = "/{transactionId}/confirm-payment", version = "1.0")
+    public ResponseEntity<GenericResponse<Void>> confirmPayment(@PathVariable Long transactionId,
+                                                                  @RequestBody @Valid ConfirmPaymentRequest request,
+                                                                  Authentication authentication){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(transactionService.confirmPayment(transactionId, request, authentication.getName()));
     }
 
 }

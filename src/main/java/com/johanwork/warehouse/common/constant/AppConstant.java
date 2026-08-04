@@ -45,6 +45,9 @@ public class AppConstant {
         public static final String TITLE_QRIS_CHARGE_FAILED = "QRIS CHARGE FAILED";
         public static final String MESSAGE_QRIS_CHARGE_FAILED = "Failed to charge QRIS";
 
+        public static final String TITLE_QR_IMAGE_UNAVAILABLE = "QR IMAGE UNAVAILABLE";
+        public static final String MESSAGE_QR_IMAGE_UNAVAILABLE = "This transaction does not have a self-hosted QR code";
+
         public static final String TITLE_FORBIDDEN = "FORBIDDEN";
         public static final String MESSAGE_FORBIDDEN = "You are not authorized to access this resource";
 

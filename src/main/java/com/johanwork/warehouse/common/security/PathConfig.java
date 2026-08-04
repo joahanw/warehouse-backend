@@ -14,6 +14,7 @@ public class PathConfig {
                 "/api/auth/**",
                 "/api/csrf-token",
                 "/api/payments/notification",
+                "/api/transactions/*/qr-image",
                 "/api/logging/public",
                 "/api/swagger-ui.html",
                 "/swagger-ui/**",

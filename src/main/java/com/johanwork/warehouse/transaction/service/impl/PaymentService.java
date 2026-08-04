@@ -8,7 +8,6 @@ import com.johanwork.warehouse.notification.dto.InvoiceEmailDto;
 import com.johanwork.warehouse.notification.service.INotificationService;
 import com.johanwork.warehouse.notification.service.ITelegramService;
 import com.johanwork.warehouse.transaction.dto.FraudStatus;
-import com.johanwork.warehouse.transaction.dto.PaymentMethod;
 import com.johanwork.warehouse.transaction.dto.PaymentStatus;
 import com.johanwork.warehouse.transaction.dto.response.MidtransNotification;
 import com.johanwork.warehouse.transaction.entity.Transaction;
@@ -24,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.johanwork.warehouse.common.util.AppUtil.*;
+import static com.johanwork.warehouse.common.util.AppUtil.formatCurrency;
 
 @Service
 @RequiredArgsConstructor
@@ -66,40 +65,49 @@ public class PaymentService implements IPaymentService {
             return;
         }
 
-        if (transaction.getPaymentStatus() == incomingStatus) {
-            log.info("Duplicate notification ignored: orderId={}, status={} already applied",
-                    req.orderId(), incomingStatus);
-            return;
-        }
-
-        if (transaction.getPaymentStatus() == PaymentStatus.success) {
-            log.warn("Notification ignored: orderId={} already marked success, incoming status={}",
-                    req.orderId(), incomingStatus);
-            return;
-        }
-
-        // Update status
-        transaction.setPaymentStatus(incomingStatus);
-        transaction.setFraudStatus(resolveFraudStatus(req.fraudStatus()));
-        transaction.setTransactionCode(req.transactionId());
-        transactionRepository.save(transaction);
-
-        if (incomingStatus == PaymentStatus.success){
-            transaction.getTransactionProducts().forEach(tp -> {
-                merchantProductDomainService.reduceMerchantProductStock(transaction.getMerchant().getId(),
-                        tp.getProduct().getId(),
-                        tp.getQuantity().longValue());
-            });
-            notificationService.sendInvoiceEmail(transaction.getEmail(),
-                    buildInvoiceData(transaction));
-            telegramService.sendPaymentSuccess(transaction);
-        }
+        confirm(transaction, incomingStatus, resolveFraudStatus(req.fraudStatus()), req.transactionId());
 
         log.info("Notification: orderId={}, status={}", req.orderId(), req.transactionStatus());
     }
 
-    private InvoiceEmailDto buildInvoiceData(Transaction transaction){
-        String invoiceId = String.format("INV-"+transaction.getTransactionCode().substring(0,8)+"-00"+transaction.getMerchant().getId());
+    @Transactional
+    @Override
+    public void confirm(Transaction transaction, PaymentStatus newStatus, FraudStatus fraudStatus, String transactionCodeOverride) {
+        if (transaction.getPaymentStatus() == newStatus) {
+            log.info("Duplicate confirmation ignored: orderId={}, status={} already applied",
+                    transaction.getOrderId(), newStatus);
+            return;
+        }
+
+        if (transaction.getPaymentStatus() == PaymentStatus.success) {
+            log.warn("Confirmation ignored: orderId={} already marked success, incoming status={}",
+                    transaction.getOrderId(), newStatus);
+            return;
+        }
+
+        transaction.setPaymentStatus(newStatus);
+        if (fraudStatus != null) {
+            transaction.setFraudStatus(fraudStatus);
+        }
+        if (transactionCodeOverride != null) {
+            transaction.setTransactionCode(transactionCodeOverride);
+        }
+        transactionRepository.save(transaction);
+
+        if (newStatus == PaymentStatus.success) {
+            transaction.getTransactionProducts().forEach(tp ->
+                    merchantProductDomainService.reduceMerchantProductStock(transaction.getMerchant().getId(),
+                            tp.getProduct().getId(),
+                            tp.getQuantity().longValue()));
+            notificationService.sendInvoiceEmail(transaction.getEmail(), buildInvoiceData(transaction));
+            telegramService.sendPaymentSuccess(transaction);
+        }
+
+        log.info("Payment confirmed: orderId={}, status={}", transaction.getOrderId(), newStatus);
+    }
+
+    private InvoiceEmailDto buildInvoiceData(Transaction transaction) {
+        String invoiceId = String.format("INV-" + transaction.getTransactionCode().substring(0, 8) + "-00" + transaction.getMerchant().getId());
         List<InvoiceEmailDto.InvoiceItem> items = transaction.getTransactionProducts()
                 .stream()
                 .map(tp -> new InvoiceEmailDto.InvoiceItem(
@@ -118,7 +126,7 @@ public class PaymentService implements IPaymentService {
                 transaction.getTaxTotal(),
                 transaction.getGrandTotal(),
                 transaction.getShippingCost(),
-                PaymentMethod.qris.name().toUpperCase(),
+                transaction.getPaymentMethod().name().toUpperCase(),
                 transaction.getAddress(),
                 items);
     }
@@ -146,4 +154,3 @@ public class PaymentService implements IPaymentService {
     }
 
 }
-

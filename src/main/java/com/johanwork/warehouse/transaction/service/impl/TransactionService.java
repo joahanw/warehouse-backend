@@ -187,7 +187,7 @@ public class TransactionService implements ITransactionService {
             );
         }else {
             var params = List.of(saved.getName(),
-                    saved.getOrderId(), formatCurrency(saved.getSubTotal()), formatExpiry(expiryTime));
+                    saved.getOrderId(), formatCurrency(grandTotal), formatExpiry(expiryTime));
             notificationOutboxRepository.save(new NotificationOutbox(
                     saved.getPhone(),
                     WhatsAppTemplate.PAYMENT_CREATED_V1,

@@ -139,7 +139,8 @@ public class TransactionService implements ITransactionService {
     @Override
     public GenericResponse<CreateTransactionResponse> create(TransactionRequest rq) {
         Merchant merchant = merchantService.findMerchantById(rq.merchantId());
-        String orderId = String.format("ORDER_%s_%s", Instant.now().toEpochMilli(), merchant.getId());
+        String orderId = String.format("ORD-%s-%s",
+                Long.toString(Instant.now().toEpochMilli(), 36).toUpperCase(), merchant.getId());
 
         List<TransactionProduct> items = buildItems(rq.products());
         BigDecimal subTotal = items.stream().map(TransactionProduct::getSubTotal)

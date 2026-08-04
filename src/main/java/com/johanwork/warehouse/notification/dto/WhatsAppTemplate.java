@@ -5,12 +5,13 @@ import java.util.List;
 public enum WhatsAppTemplate {
 
     PAYMENT_CREATED_V1(4, """
-            Halo {{1}}, pesanan {{2}} sudah kami terima.
+            Halo *{{1}}* 👋,
+            pesanan {{2}} sudah kami terima.
 
-            Total pembayaran: *Rp{{3}}*
-            Batas waktu: {{4}}
+            💰 Total pembayaran: *{{3}}*
+            ⏰ Batas waktu: *{{4}}*
 
-            Mohon transfer sesuai nominal di atas \
+            Silakan scan QRIS di atas dan transfer sesuai nominal \
             agar pembayaran dapat kami verifikasi otomatis.
 
             Bakedbyrina""");

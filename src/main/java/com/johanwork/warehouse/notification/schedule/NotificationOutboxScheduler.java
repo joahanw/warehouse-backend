@@ -20,7 +20,6 @@ import java.util.concurrent.ThreadLocalRandom;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class NotificationOutboxScheduler {
 
     private final NotificationOutboxRepository repository;

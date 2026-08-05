@@ -272,18 +272,6 @@ public class TransactionService implements ITransactionService {
         return new GenericResponse<>(null, String.format(AppConstant.Success.UPDATED, "Payment status"));
     }
 
-    private Instant parseExpiry(String expiryTime) {
-        if (expiryTime == null) return null;
-        return LocalDateTime.parse(expiryTime.trim(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                .toInstant(ZoneOffset.of("+07:00"));
-    }
-
-    private String formatExpiry(Instant expiryTime) {
-        return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-                .withZone(ZoneOffset.of("+07:00"))
-                .format(expiryTime);
-    }
 
     private PaymentPendingDto mapToPaymentPendingDto(List<TransactionProduct> tp, Transaction tx, String qr, Instant expiryTime){
         List<PaymentPendingDto.OrderItem> items = tp.stream()

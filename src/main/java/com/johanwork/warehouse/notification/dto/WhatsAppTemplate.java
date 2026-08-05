@@ -14,7 +14,17 @@ public enum WhatsAppTemplate {
             Silakan scan QRIS di atas dan transfer sesuai nominal \
             agar pembayaran dapat kami verifikasi otomatis.
 
-            Bakedbyrina""");
+            Bakedbyerina"""),
+
+    PAYMENT_CONFIRMED_V1(3, """
+            Halo *{{1}}* 👋,
+            pembayaran untuk pesanan {{2}} telah kami terima dan konfirmasi.
+
+            💰 Total: *{{3}}*
+
+            Terima kasih sudah berbelanja, pesanan Anda akan segera kami proses.
+
+            Bakedbyerina""");
 
     private final int paramCount;
     private final String body;

@@ -5,6 +5,9 @@ import com.johanwork.warehouse.common.constant.AppConstant;
 import com.johanwork.warehouse.common.exception.CustomException;
 import com.johanwork.warehouse.merchant.service.IMerchantProductDomainService;
 import com.johanwork.warehouse.notification.dto.InvoiceEmailDto;
+import com.johanwork.warehouse.notification.dto.WhatsAppTemplate;
+import com.johanwork.warehouse.notification.entity.NotificationOutbox;
+import com.johanwork.warehouse.notification.repository.NotificationOutboxRepository;
 import com.johanwork.warehouse.notification.service.INotificationService;
 import com.johanwork.warehouse.notification.service.ITelegramService;
 import com.johanwork.warehouse.transaction.dto.FraudStatus;
@@ -24,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.johanwork.warehouse.common.util.AppUtil.formatCurrency;
+import static com.johanwork.warehouse.common.util.AppUtil.toJson;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class PaymentService implements IPaymentService {
     private final INotificationService notificationService;
     private final ITelegramService telegramService;
     private final IMerchantProductDomainService merchantProductDomainService;
+    private final NotificationOutboxRepository notificationOutboxRepository;
 
     @Transactional
     @Override
@@ -99,7 +104,16 @@ public class PaymentService implements IPaymentService {
                     merchantProductDomainService.reduceMerchantProductStock(transaction.getMerchant().getId(),
                             tp.getProduct().getId(),
                             tp.getQuantity().longValue()));
-            notificationService.sendInvoiceEmail(transaction.getEmail(), buildInvoiceData(transaction));
+            if (!transaction.getPhone().isBlank()){
+                var params = List.of(transaction.getName(), transaction.getOrderId(),
+                        formatCurrency(transaction.getGrandTotal()));
+                notificationOutboxRepository.save(new NotificationOutbox(
+                        transaction.getPhone(),
+                        WhatsAppTemplate.PAYMENT_CONFIRMED_V1,
+                        toJson(params)
+                ));
+            }
+//            notificationService.sendInvoiceEmail(transaction.getEmail(), buildInvoiceData(transaction));
             telegramService.sendPaymentSuccess(transaction);
         }
 
@@ -130,6 +144,8 @@ public class PaymentService implements IPaymentService {
                 transaction.getAddress(),
                 items);
     }
+
+
 
     private PaymentStatus resolvePaymentStatus(String status) {
         return switch (status) {

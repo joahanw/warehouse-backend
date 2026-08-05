@@ -21,9 +21,9 @@ public enum WhatsAppTemplate {
             pembayaran untuk pesanan {{2}} telah kami terima dan konfirmasi.
 
             💰 Total: *{{3}}*
-
-            Terima kasih sudah berbelanja, pesanan Anda akan segera kami proses.
-
+            
+            Terima kasih 🙏🏻 Pesanan Anda akan segera kami proses
+            
             Bakedbyerina""");
 
     private final int paramCount;

@@ -26,7 +26,7 @@ public class TransactionResponse {
     private String paymentStatus;
     private String paymentMethod;
     private String transactionCode;
-    private String oderId;
+    private String orderId;
     private String notes;
 
     private List<TransactionProductResponse> transactionProducts;

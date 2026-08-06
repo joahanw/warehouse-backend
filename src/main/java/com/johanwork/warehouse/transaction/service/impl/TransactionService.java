@@ -214,13 +214,14 @@ public class TransactionService implements ITransactionService {
     @Override
     public GenericResponse<PageResponse<TransactionResponse>> getAllTransaction(int pageNumber, int pageSize,
                                                                                 String sortBy, String sortDirection,
-                                                                                String search, Long merchantId) {
+                                                                                String search, Long merchantId,
+                                                                                Integer month, Integer year) {
         Sort sort = sortDirection.equalsIgnoreCase("desc")
                 ? Sort.by(Sort.Direction.DESC, sortBy)
                 : Sort.by(Sort.Direction.ASC, sortBy);
         Pageable pageable = PageRequest.of(pageNumber, pageSize, sort);
         Page<Transaction> transactions = transactionRepository.findAll(
-                TransactionSpecification.filter(search, merchantId),
+                TransactionSpecification.filter(search, merchantId, month, year),
                 pageable
         );
         return transactionMapper.mapToPageTransactionResponse(transactions, String.format(AppConstant.Success.FETCHED, "Transaction"));

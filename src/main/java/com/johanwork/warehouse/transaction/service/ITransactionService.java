@@ -11,7 +11,7 @@ import com.johanwork.warehouse.transaction.dto.response.TransactionResponse;
 public interface ITransactionService {
     GenericResponse<DashboardStatsByMerchantResponse> getDashboardStats(String email);
     GenericResponse<CreateTransactionResponse> create(TransactionRequest transactionRequest);
-    GenericResponse<PageResponse<TransactionResponse>> getAllTransaction(int pageNumber, int pageSize, String sortBy, String sortDirection, String search, Long merchantId);
+    GenericResponse<PageResponse<TransactionResponse>> getAllTransaction(int pageNumber, int pageSize, String sortBy, String sortDirection, String search, Long merchantId, Integer month, Integer year);
     byte[] getQrImage(Long transactionId);
     GenericResponse<Void> confirmPayment(Long transactionId, ConfirmPaymentRequest request, String requesterEmail);
 }

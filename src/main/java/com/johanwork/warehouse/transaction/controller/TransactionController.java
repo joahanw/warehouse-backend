@@ -43,11 +43,29 @@ public class TransactionController {
             @RequestParam(required = false, defaultValue = "id") String sortBy,
             @RequestParam(required = false, defaultValue = "asc") String sortDirection,
             @RequestParam(required = false) String search,
-            @RequestParam(required = false) Long merchantId
+            @RequestParam(required = false) Long merchantId,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year
     ){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(transactionService.getAllTransaction(pageNumber, pageSize, sortBy,
-                        sortDirection, search, merchantId));
+                        sortDirection, search, merchantId, month, year));
+    }
+
+    @GetMapping(path = "/summary", version = "1.0")
+    public ResponseEntity<GenericResponse<PageResponse<TransactionResponse>>> getTransactionSummary(
+            @RequestParam(required = false, defaultValue = "0") int pageNumber,
+            @RequestParam(required = false, defaultValue = "10") int pageSize,
+            @RequestParam(required = false, defaultValue = "id") String sortBy,
+            @RequestParam(required = false, defaultValue = "asc") String sortDirection,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Long merchantId,
+            @RequestParam(required = false) Integer month,
+            @RequestParam(required = false) Integer year
+    ){
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(transactionService.getAllTransaction(pageNumber, pageSize, sortBy,
+                        sortDirection, search, merchantId, month, year));
     }
 
     @GetMapping(path = "/{transactionId}", version = "1.0")

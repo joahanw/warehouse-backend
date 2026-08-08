@@ -4,27 +4,32 @@ import java.util.List;
 
 public enum WhatsAppTemplate {
 
-    PAYMENT_CREATED_V1(4, """
-            Halo *{{1}}* 👋,
-            pesanan {{2}} sudah kami terima.
+    PAYMENT_CREATED_V1(5, """
+            Halo kak *{{1}}* 👋,
+            pesanan kamu sudah kami terima.
+
+            🛍 Detail Pesanan
+            {{2}}
 
             💰 Total pembayaran: *{{3}}*
             ⏰ Batas waktu: *{{4}}*
+            📅 Tgl Pengiriman/Pick-up: *{{5}}*
 
             Silakan scan QRIS di atas dan transfer sesuai nominal \
             agar pembayaran dapat kami verifikasi otomatis.
 
-            Bakedbyerina"""),
+            Thank you for ordering Bakedbyerina! ✨"""),
 
     PAYMENT_CONFIRMED_V1(3, """
-            Halo *{{1}}* 👋,
-            pembayaran untuk pesanan {{2}} telah kami terima dan konfirmasi.
+            Halo kak *{{1}}* 👋,
+            pembayaran untuk pesanan kamu telah kami terima dan konfirmasi.
 
-            💰 Total: *{{3}}*
+            💰 Total: *{{2}}*
+            📅 Tgl Pengiriman/Pick-up: *{{3}}*
             
             Terima kasih 🙏🏻 Pesanan Anda akan segera kami proses
             
-            Bakedbyerina""");
+            Thank you for ordering Bakedbyerina! ✨""");
 
     private final int paramCount;
     private final String body;

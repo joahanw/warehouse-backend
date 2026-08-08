@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Component
 @RequiredArgsConstructor
@@ -33,6 +34,7 @@ public class TransactionMapper {
         tx.setOrderId(orderId);
         tx.setCurrency("IDR");
         tx.setNotes(rq.notes());
+        tx.setDeliveryDate(rq.deliveryDate());
         tx.setMerchant(merchant);
         tx.setSubTotal(subTotal);
         tx.setTaxTotal(taxTotal);
@@ -71,6 +73,7 @@ public class TransactionMapper {
                 transaction.getTransactionCode(),
                 transaction.getOrderId(),
                 transaction.getNotes(),
+                transaction.getDeliveryDate(),
                 includeTransactionProducts
                         ? transaction.getTransactionProducts().stream()
                             .map(transactionProductMapper::entityToResponse).toList()
@@ -88,13 +91,15 @@ public class TransactionMapper {
 
     public GenericResponse<CreateTransactionResponse> mapToCreateTransactionResponse(Long transactionId, String orderId,String qrCodeUrl,
                                                                                      String expiryTime, BigDecimal grandTotal,
+                                                                                     LocalDate deliveryDate,
                                                                                      String message){
         return new GenericResponse<>(new CreateTransactionResponse(
                 transactionId,
                 orderId,
                 qrCodeUrl,
                 expiryTime,
-                grandTotal
+                grandTotal,
+                deliveryDate
         ), message);
     }
 

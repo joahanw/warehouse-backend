@@ -27,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.johanwork.warehouse.common.util.AppUtil.formatCurrency;
+import static com.johanwork.warehouse.common.util.AppUtil.formatDate;
 import static com.johanwork.warehouse.common.util.AppUtil.toJson;
 
 @Service
@@ -105,8 +106,9 @@ public class PaymentService implements IPaymentService {
                             tp.getProduct().getId(),
                             tp.getQuantity().longValue()));
             if (!transaction.getPhone().isBlank()){
-                var params = List.of(transaction.getName(), transaction.getOrderId(),
-                        formatCurrency(transaction.getGrandTotal()));
+                var params = List.of(transaction.getName(),
+                        formatCurrency(transaction.getGrandTotal()),
+                        formatDate(transaction.getDeliveryDate()));
                 notificationOutboxRepository.save(new NotificationOutbox(
                         transaction.getPhone(),
                         WhatsAppTemplate.PAYMENT_CONFIRMED_V1,

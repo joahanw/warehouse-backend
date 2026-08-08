@@ -187,7 +187,9 @@ public class TransactionService implements ITransactionService {
             );
         }else {
             var params = List.of(saved.getName(),
-                    saved.getOrderId(), formatCurrency(grandTotal), formatExpiry(expiryTime));
+                    buildOrderDetailText(items),
+                    formatCurrency(grandTotal), formatExpiry(expiryTime),
+                    formatDate(saved.getDeliveryDate()));
             notificationOutboxRepository.save(new NotificationOutbox(
                     saved.getPhone(),
                     WhatsAppTemplate.PAYMENT_CREATED_V1,
@@ -206,7 +208,7 @@ public class TransactionService implements ITransactionService {
         }
 
         return transactionMapper.mapToCreateTransactionResponse(
-                saved.getId(), orderId, qrCodeUrl, expiryTimeDisplay, grandTotal
+                saved.getId(), orderId, qrCodeUrl, expiryTimeDisplay, grandTotal, saved.getDeliveryDate()
                 ,String.format(AppConstant.Success.FETCHED, "Transaction")
         );
     }
@@ -292,6 +294,16 @@ public class TransactionService implements ITransactionService {
                 tx.getAddress(),
                 items
         );
+    }
+
+    private String buildOrderDetailText(List<TransactionProduct> items) {
+        return items.stream()
+                .map(item -> String.format("  • %s x%d — %s",
+                        item.getProduct().getName(),
+                        item.getQuantity(),
+                        formatCurrency(item.getSubTotal())))
+                .reduce((a, b) -> a + "\n" + b)
+                .orElse("-");
     }
 
     private QrisChargeResponse chargerQris(Transaction transaction, List<TransactionProduct> items) {

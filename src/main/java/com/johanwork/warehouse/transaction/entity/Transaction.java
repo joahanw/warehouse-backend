@@ -19,6 +19,7 @@ import org.hibernate.validator.constraints.pl.NIP;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -121,6 +122,9 @@ public class Transaction extends BaseEntity {
     @Column(columnDefinition = "TEXT")
     private String notes;
     private String currency;
+
+    @Column(nullable = false)
+    private LocalDate deliveryDate;
 
     @Enumerated(EnumType.STRING)
     private FraudStatus fraudStatus;

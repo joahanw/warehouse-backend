@@ -9,6 +9,7 @@ import tools.jackson.databind.ObjectMapper;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +28,12 @@ public class AppUtil {
 
     public static String formatDateTime(LocalDateTime dateTime){
         return dateTime.format(DateTimeFormatter.ofPattern("dd MMM yyyy, HH:mm",
+                new Locale("id","ID")));
+    }
+
+    public static String formatDate(LocalDate date){
+        if (date == null) return "-";
+        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy",
                 new Locale("id","ID")));
     }
 

@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.johanwork.warehouse.common.util.AppUtil.formatCurrency;
+import static com.johanwork.warehouse.common.util.AppUtil.formatDate;
 import static com.johanwork.warehouse.common.util.AppUtil.formatDateTime;
 
 @Service
@@ -114,6 +115,7 @@ public class TelegramService implements ITelegramService {
                         "🚚 Pengiriman: %s\n"                     +
                         "💰 <b>Total  : %s</b>\n"                 +
                         "💳 Metode    : QRIS\n"                   +
+                        "📅 Tgl Pengiriman/Pick-up: %s\n"         +
                         "━━━━━━━━━━━━━━━━━━━━\n"                  +
                         "⏰ %s",
                 transaction.getOrderId(),
@@ -124,6 +126,7 @@ public class TelegramService implements ITelegramService {
                 formatCurrency(Objects.requireNonNullElse(
                         transaction.getShippingCost(), BigDecimal.ZERO)),
                 formatCurrency(transaction.getGrandTotal()),
+                formatDate(transaction.getDeliveryDate()),
                 formatDateTime(LocalDateTime.now())
         );
     }

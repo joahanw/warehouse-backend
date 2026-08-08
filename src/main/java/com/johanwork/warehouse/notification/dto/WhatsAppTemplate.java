@@ -5,8 +5,8 @@ import java.util.List;
 public enum WhatsAppTemplate {
 
     PAYMENT_CREATED_V1(5, """
-            Halo kak *{{1}}* 👋,
-            pesanan kamu sudah kami terima.
+            Halo kak *{{1}}* 👋
+            Pesanan kamu sudah kami terima.
 
             🛍 Detail Pesanan
             {{2}}
@@ -21,15 +21,13 @@ public enum WhatsAppTemplate {
             Thank you for ordering Bakedbyerina! ✨"""),
 
     PAYMENT_CONFIRMED_V1(3, """
-            Halo kak *{{1}}* 👋,
-            pembayaran untuk pesanan kamu telah kami terima dan konfirmasi.
+            Halo kak *{{1}}* 👋
+            Pembayaran untuk pesanan kamu telah kami terima dan konfirmasi.
 
             💰 Total: *{{2}}*
             📅 Tgl Pengiriman/Pick-up: *{{3}}*
             
-            Terima kasih 🙏🏻 Pesanan Anda akan segera kami proses
-            
-            Thank you for ordering Bakedbyerina! ✨""");
+            Terima kasih 🙏🏻 Pesanan Anda akan segera kami proses.""");
 
     private final int paramCount;
     private final String body;

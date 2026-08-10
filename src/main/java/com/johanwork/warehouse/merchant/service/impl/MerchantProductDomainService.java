@@ -24,8 +24,8 @@ public class MerchantProductDomainService implements IMerchantProductDomainServi
     private final IMerchantDomainService merchantService;
 
     @Caching(evict = {
-            @CacheEvict(value = "merchant-list", allEntries = true),
-            @CacheEvict(value = "merchants", allEntries = true)
+            @CacheEvict(value = "merchant-product-list", allEntries = true),
+            @CacheEvict(value = "merchant-product", allEntries = true)
     })
     @Transactional
     @Override

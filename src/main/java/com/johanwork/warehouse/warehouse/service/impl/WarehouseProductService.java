@@ -45,7 +45,6 @@ public class WarehouseProductService implements IWarehouseProductService
 
     @Cacheable(
             value = "warehouse-product-list",
-            condition = "#search == null || #search.isBlank()",
             key = "T(String).format('%d-%d-%s-%s', #pageNumber, #pageSize, #sortBy, #sortDirection)"
     )
     @Override

@@ -49,8 +49,7 @@ public class MerchantProductService implements IMerchantProductService {
 
     @Cacheable(
             value = "merchant-product-list",
-            condition = "#search == null || #search.isBlank()",
-            key = "T(String).format('%d-%d-%s-%s', #pageNumber, #pageSize, #sortBy, #sortDirection)"
+            key = "T(String).format('%d-%d-%s-%s-%s-%s-%s', #pageNumber, #pageSize, #sortBy, #sortDirection, #stock, #merchantId, #productId)"
     )
     @Override
     public GenericResponse<PageResponse<MerchantProductResponse>> getMerchantProducts(int pageNumber, int pageSize,

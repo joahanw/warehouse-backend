@@ -106,8 +106,7 @@ public class PaymentService implements IPaymentService {
                             tp.getProduct().getId(),
                             tp.getQuantity().longValue()));
             if (!transaction.getPhone().isBlank()){
-                var params = List.of(transaction.getName(),
-                        formatCurrency(transaction.getGrandTotal()),
+                var params = List.of(formatCurrency(transaction.getGrandTotal()),
                         formatDate(transaction.getDeliveryDate()));
                 notificationOutboxRepository.save(new NotificationOutbox(
                         transaction.getPhone(),

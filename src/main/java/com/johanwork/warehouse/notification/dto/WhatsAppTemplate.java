@@ -21,13 +21,12 @@ public enum WhatsAppTemplate {
             Thank you for ordering Bakedbyerina! ✨"""),
 
     PAYMENT_CONFIRMED_V1(3, """
-            Halo kak *{{1}}* 👋
-            Pembayaran untuk pesanan kamu telah kami terima dan konfirmasi.
+            Terima kasih 🙏🏻Pembayaran telah kami terima dan konfirmasi.
 
-            💰 Total: *{{2}}*
-            📅 Tgl Pengiriman/Pick-up: *{{3}}*
+            💰 Total: *{{1}}*
+            📅 Tgl Pengiriman/Pick-up: *{{2}}*
             
-            Terima kasih 🙏🏻 Pesanan Anda akan segera kami proses.""");
+            Pesanan akan segera kami proses. Mohon ditunggu untuk pengirimannya.""");
 
     private final int paramCount;
     private final String body;

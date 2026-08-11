@@ -188,7 +188,9 @@ public class TransactionService implements ITransactionService {
         }else {
             var params = List.of(saved.getName(),
                     buildOrderDetailText(items),
-                    formatCurrency(grandTotal), formatExpiry(expiryTime),
+                    formatCurrency(saved.getShippingCost()),
+                    formatCurrency(grandTotal),
+                    formatExpiry(expiryTime),
                     formatDate(saved.getDeliveryDate()));
             notificationOutboxRepository.save(new NotificationOutbox(
                     saved.getPhone(),

@@ -33,7 +33,7 @@ public class AppUtil {
 
     public static String formatDate(LocalDate date){
         if (date == null) return "-";
-        return date.format(DateTimeFormatter.ofPattern("dd MMM yyyy",
+        return date.format(DateTimeFormatter.ofPattern("dd MMMM yyyy",
                 new Locale("id","ID")));
     }
 

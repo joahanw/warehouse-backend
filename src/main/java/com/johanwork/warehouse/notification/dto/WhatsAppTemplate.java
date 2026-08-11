@@ -7,13 +7,13 @@ public enum WhatsAppTemplate {
     PAYMENT_CREATED_V1(5, """
             Halo kak *{{1}}* 👋
             Pesanan kamu sudah kami terima.
-
-            🛍 Detail Pesanan
+            
             {{2}}
-
-            💰 Total pembayaran: *{{3}}*
-            ⏰ Batas waktu: *{{4}}*
-            📅 Tgl Pengiriman/Pick-up: *{{5}}*
+            
+            🚚 Ongkir: *{{3}}*
+            💰 Total pembayaran: *{{4}}*
+            ⏰ Batas waktu: *{{5}}*
+            📅 Tgl Pengiriman/Pick-up: *{{6}}*
 
             Silakan scan QRIS di atas dan transfer sesuai nominal \
             agar pembayaran dapat kami verifikasi otomatis.

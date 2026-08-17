@@ -24,25 +24,25 @@ public class CaffeineCacheConfig {
                 cache("role-list", 20, 360),
                 cache("roles", 20, 360),
 
-                cache("product-list", 1000, 60),
-                cache("products", 1000, 120),
+                cache("product-list", 1000, 15),
+                cache("products", 1000, 30),
 
                 cache("user-list", 1000, 60),
                 cache("users", 1000, 120),
 
-                cache("warehouse-list", 50, 180),
-                cache("warehouses", 50, 360),
+                cache("warehouse-list", 50, 15),
+                cache("warehouses", 50, 30),
 
-                cache("warehouse-product-list", 1000, 60),
-                cache("warehouses-product", 1000, 120),
-                cache("warehouses-product-by-warehouse-id", 1000, 120),
-                cache("warehouses-product-by-warehouse-id-and-product-id", 1000, 120),
+                cache("warehouse-product-list", 1000, 15),
+                cache("warehouses-product", 1000, 30),
+                cache("warehouses-product-by-warehouse-id", 1000, 15),
+                cache("warehouses-product-by-warehouse-id-and-product-id", 1000, 15),
 
-                cache("merchant-list", 50, 180),
-                cache("merchants", 50, 360),
+                cache("merchant-list", 50, 15),
+                cache("merchants", 50, 15),
 
-                cache("merchant-product-list", 1000, 60),
-                cache("merchant-product", 1000, 120)
+                cache("merchant-product-list", 1000, 15),
+                cache("merchant-product", 1000, 15)
         ));
         return cacheManager;
     }

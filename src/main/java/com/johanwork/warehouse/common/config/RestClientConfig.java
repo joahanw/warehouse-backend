@@ -62,7 +62,7 @@ public class RestClientConfig {
     @Bean("wahaRestClient")
     public RestClient wahaRestClient(WahaAppProperties props){
         SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
-        factory.setReadTimeout(Duration.ofSeconds(20));
+        factory.setReadTimeout(Duration.ofSeconds(30));
         factory.setConnectTimeout(Duration.ofSeconds(5));
         return RestClient.builder()
                 .baseUrl(props.apiBaseURL())

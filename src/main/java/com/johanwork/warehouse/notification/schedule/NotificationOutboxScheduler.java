@@ -9,7 +9,7 @@ import com.johanwork.warehouse.notification.repository.NotificationOutboxReposit
 import com.johanwork.warehouse.notification.service.impl.WahaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Async;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,26 +22,33 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor
 public class NotificationOutboxScheduler {
 
+    private static final int BATCH_SIZE = 50;
+
     private final NotificationOutboxRepository repository;
     private final WahaService service;
     private final WahaAppProperties props;
     private final ObjectMapper objectMapper;
 
-    @Async("wahaExecutor")
-    @Scheduled(fixedDelay = 15_000)
+    @Scheduled(fixedDelay = 10_000)
     public void processQueue(){
-        List<NotificationOutbox> pending = repository.findPendingOrderByOldest();
-        if (pending.isEmpty()){
+        List<NotificationOutbox> claimed = claimBatch();
+        if (claimed.isEmpty()){
             return;
         }
-        log.info("Processing {} pending notifications", pending.size());
-        for (NotificationOutbox item : pending){
+        log.info("Processing {} pending notifications", claimed.size());
+        for (NotificationOutbox item : claimed){
             sendOne(item);
             sleepRandom();
         }
     }
 
     @Transactional
+    List<NotificationOutbox> claimBatch() {
+        List<NotificationOutbox> pending = repository.findPendingForUpdateSkipLocked(PageRequest.of(0, BATCH_SIZE));
+        pending.forEach(NotificationOutbox::markProcessing);
+        return pending;
+    }
+
     void sendOne(NotificationOutbox item) {
         try {
             List<String> params = objectMapper.readValue(

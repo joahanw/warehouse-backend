@@ -63,20 +63,15 @@ public class WahaService {
     }
 
     private void dispatch(String chatId, String text, String label) {
-        try {
-            Map<?, ?> response = client.post()
-                    .uri("/api/sendText")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(new SendTextRequest(session, chatId, text))
-                    .retrieve()
-                    .body(Map.class);
+        Map<?, ?> response = client.post()
+                .uri("/api/sendText")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new SendTextRequest(session, chatId, text))
+                .retrieve()
+                .body(Map.class);
 
-            Object id = response == null ? null : response.get("id");
-            log.info("WAHA successfully send message {} template={} messageId={}", chatId, label, id);
-
-        } catch (RestClientException ex) {
-            log.error("Failed to send message!!");
-        }
+        Object id = response == null ? null : response.get("id");
+        log.info("WAHA successfully send message {} template={} messageId={}", chatId, label, id);
     }
 
     public void sendImageUrl(String target, String imageUrl, String caption){

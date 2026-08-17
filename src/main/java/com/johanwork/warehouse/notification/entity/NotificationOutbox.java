@@ -52,6 +52,10 @@ public class NotificationOutbox {
         this.imageUrl = imageUrl;
     }
 
+    public void markProcessing() {
+        this.status = NotificationStatus.PROCESSING;
+    }
+
     public void markSent() {
         this.status = NotificationStatus.SENT;
         this.sentAt = Instant.now();

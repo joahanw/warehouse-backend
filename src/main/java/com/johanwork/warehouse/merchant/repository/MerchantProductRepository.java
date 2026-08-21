@@ -45,4 +45,6 @@ public interface MerchantProductRepository extends JpaRepository<MerchantProduct
                                     @Param("productId") Long productId,
                                     @Param("quantity") Long quantity);
 
+    boolean existsByProduct_IdAndMerchant_Id(Long productId, Long merchantId);
+
 }

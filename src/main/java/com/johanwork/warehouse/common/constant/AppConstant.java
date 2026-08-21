@@ -57,6 +57,9 @@ public class AppConstant {
         public static final String TITLE_INFISICAL_UNAVAILABLE = "INFISICAL UNAVAILABLE";
         public static final String MESSAGE_INFISICAL_UNAVAILABLE = "Infisical is unavailable, please try again later";
 
+        public static final String TITLE_MERCHANT_PRODUCT_EXISTS = "MERCHANT PRODUCT ALREADY EXISTS";
+        public static final String MESSAGE_MERCHANT_PRODUCT_EXISTS = "Merchant product is already exists";
+
         private Error() {}
     }
 

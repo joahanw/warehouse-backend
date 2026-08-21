@@ -104,6 +104,11 @@ public class MerchantProductService implements IMerchantProductService {
     @Transactional
     @Override
     public GenericResponse<Void> create(MerchantProductRequest request) {
+        if (merchantProductRepository.existsByProduct_IdAndMerchant_Id(request.productId(), request.merchantId())){
+            throw new CustomException(HttpStatus.BAD_REQUEST,
+                    AppConstant.Error.TITLE_MERCHANT_PRODUCT_EXISTS,
+                    AppConstant.Error.MESSAGE_MERCHANT_PRODUCT_EXISTS);
+        }
         Merchant merchant = merchantService.findMerchantById(request.merchantId());
         Product product = productService.findProductById(request.productId());
         Warehouse warehouse = warehouseService.findWarehouseById(request.warehouseId());

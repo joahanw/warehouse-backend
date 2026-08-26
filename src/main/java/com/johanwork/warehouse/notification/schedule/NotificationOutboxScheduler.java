@@ -29,7 +29,7 @@ public class NotificationOutboxScheduler {
     private final WahaAppProperties props;
     private final ObjectMapper objectMapper;
 
-    @Scheduled(fixedDelay = 10_000)
+    @Scheduled(fixedDelay = 15_000)
     public void processQueue(){
         List<NotificationOutbox> claimed = claimService.claimBatch(BATCH_SIZE);
         if (claimed.isEmpty()){
@@ -61,7 +61,6 @@ public class NotificationOutboxScheduler {
             item.markFailed(ex.getMessage());
             log.error("Notification {} failed (attempt-{}): {}",
                     item.getId(), item.getAttempt(), ex.getMessage());
-            // TODO: kalau item.getStatus() == FAILED (sudah 5x), kirim alert
         } finally {
             repository.save(item);
         }

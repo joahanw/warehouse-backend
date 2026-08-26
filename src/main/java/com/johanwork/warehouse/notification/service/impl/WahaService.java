@@ -2,13 +2,10 @@ package com.johanwork.warehouse.notification.service.impl;
 
 import com.johanwork.warehouse.common.config.configProps.WahaAppProperties;
 import com.johanwork.warehouse.common.config.configProps.WhatsAppProperties;
-import com.johanwork.warehouse.common.constant.AppConstant;
-import com.johanwork.warehouse.common.exception.CustomException;
 import com.johanwork.warehouse.notification.dto.WhatsAppTemplate;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -91,22 +88,15 @@ public class WahaService {
                 "caption", caption
         );
 
-        try {
-            Map<?,?> response = client.post()
-                    .uri("/api/sendImage")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(payload)
-                    .retrieve()
-                    .body(Map.class);
+        Map<?,?> response = client.post()
+                .uri("/api/sendImage")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(payload)
+                .retrieve()
+                .body(Map.class);
 
-            Object id = response == null ? null : response.get("id");
-            log.info("WAHA successfully send image {} messageId={}", chatId, id);
-        } catch (RestClientException ex) {
-            log.error("Failed to send image : {}", ex.getMessage());
-            throw new CustomException(HttpStatus.SERVICE_UNAVAILABLE,
-                    AppConstant.Error.TITLE_QR_IMAGE_UNAVAILABLE,
-                    AppConstant.Error.MESSAGE_QR_IMAGE_UNAVAILABLE);
-        }
+        Object id = response == null ? null : response.get("id");
+        log.info("WAHA successfully send image {} messageId={}", chatId, id);
     }
 
     /** Nomor -> 628xxx@c.us. chatId grup (@g.us) atau kontak (@c.us) diteruskan apa adanya. */

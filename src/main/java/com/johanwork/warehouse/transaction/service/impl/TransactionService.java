@@ -179,7 +179,6 @@ public class TransactionService implements ITransactionService {
             expiryTimeDisplay = qrisResponse.expiryTime();
         }
 
-
         if (rq.phone().isBlank()){
             notificationService.sendPaymentPendingEmail(
                     saved.getEmail(),

@@ -64,8 +64,10 @@ public class NotificationOutbox {
     public void markFailed(String error) {
         this.attempt++;
         this.lastError = error == null ? null : error.substring(0, Math.min(error.length(), 2000));
-        if (this.attempt >=5) {
+        if (this.attempt >= 5) {
             this.status = NotificationStatus.FAILED;
+        } else {
+            resetForRetry();
         }
     }
 

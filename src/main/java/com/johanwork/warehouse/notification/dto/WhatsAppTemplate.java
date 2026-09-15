@@ -26,7 +26,7 @@ public enum WhatsAppTemplate {
             💰 Total: *{{1}}*
             📅 Tgl Pengiriman/Pick-up: *{{2}}*
             
-            Pesanan akan segera kami proses. Mohon ditunggu untuk pengirimannya.""");
+            Pesanan akan segera kami proses.""");
 
     private final int paramCount;
     private final String body;

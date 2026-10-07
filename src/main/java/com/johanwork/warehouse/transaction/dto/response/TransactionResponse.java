@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -30,6 +31,7 @@ public class TransactionResponse {
     private String orderId;
     private String notes;
     private LocalDate deliveryDate;
+    private Instant createdAt;
 
     private List<TransactionProductResponse> transactionProducts;
 

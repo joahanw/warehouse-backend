@@ -74,6 +74,7 @@ public class TransactionMapper {
                 transaction.getOrderId(),
                 transaction.getNotes(),
                 transaction.getDeliveryDate(),
+                transaction.getCreatedAt(),
                 includeTransactionProducts
                         ? transaction.getTransactionProducts().stream()
                             .map(transactionProductMapper::entityToResponse).toList()

@@ -70,6 +70,7 @@ public class TransactionMapper {
                 transaction.getMerchant().getName(),
                 transaction.getPaymentStatus().name(),
                 transaction.getPaymentMethod().name(),
+                transaction.getShippingCost(),
                 transaction.getTransactionCode(),
                 transaction.getOrderId(),
                 transaction.getNotes(),

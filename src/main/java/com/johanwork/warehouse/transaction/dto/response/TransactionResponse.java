@@ -27,6 +27,7 @@ public class TransactionResponse {
     private String merchantName;
     private String paymentStatus;
     private String paymentMethod;
+    private BigDecimal shippingCost;
     private String transactionCode;
     private String orderId;
     private String notes;

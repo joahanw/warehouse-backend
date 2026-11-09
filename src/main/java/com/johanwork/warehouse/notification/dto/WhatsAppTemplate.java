@@ -4,7 +4,7 @@ import java.util.List;
 
 public enum WhatsAppTemplate {
 
-    PAYMENT_CREATED_V1(6, """
+    PAYMENT_CREATED_V1(7, """
             Halo kak *{{1}}* 👋
             Pesanan kamu sudah kami terima.
             

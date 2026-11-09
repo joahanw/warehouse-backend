@@ -14,6 +14,8 @@ public enum WhatsAppTemplate {
             💰 Total pembayaran: *{{4}}*
             ⏰ Batas waktu: *{{5}}*
             📅 Tgl Pengiriman/Pick-up: *{{6}}*
+            
+            📒 note: *{{7}}*
 
             Silakan scan QRIS di atas dan transfer sesuai nominal \
             agar pembayaran dapat kami verifikasi otomatis.

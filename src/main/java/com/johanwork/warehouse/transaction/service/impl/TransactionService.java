@@ -190,7 +190,8 @@ public class TransactionService implements ITransactionService {
                     formatCurrency(saved.getShippingCost()),
                     formatCurrency(grandTotal),
                     formatExpiry(expiryTime),
-                    formatDate(saved.getDeliveryDate()));
+                    formatDate(saved.getDeliveryDate()),
+                    saved.getNotes());
             notificationOutboxRepository.save(new NotificationOutbox(
                     saved.getPhone(),
                     WhatsAppTemplate.PAYMENT_CREATED_V1,

@@ -105,17 +105,19 @@ public class TelegramService implements ITelegramService {
                 "✅ <b>PEMBAYARAN BERHASIL</b>\n"          +
                         "━━━━━━━━━━━━━━━━━━━━\n"                  +
                         "🧾 Order ID : <code>%s</code>\n"         +
-                        "👤 Customer : %s\n"                       +
-                        "📞 Phone    : %s\n"                       +
+                        "👤 Customer : %s\n"                      +
+                        "📞 Phone    : %s\n"                      +
                         "━━━━━━━━━━━━━━━━━━━━\n"                  +
-                        "🛍 <b>Detail Pesanan</b>\n"               +
-                        "%s"                                       +
+                        "🛍 <b>Detail Pesanan</b>\n"              +
+                        "%s"                                      +
                         "━━━━━━━━━━━━━━━━━━━━\n"                  +
                         "🧮 Subtotal  : %s\n"                     +
                         "🚚 Pengiriman: %s\n"                     +
                         "💰 <b>Total  : %s</b>\n"                 +
                         "💳 Metode    : QRIS\n"                   +
                         "📅 Tgl Pengiriman/Pick-up: %s\n"         +
+                        "━━━━━━━━━━━━━━━━━━━━\n"                  +
+                        "📒 %s"                                   +
                         "━━━━━━━━━━━━━━━━━━━━\n"                  +
                         "⏰ %s",
                 transaction.getOrderId(),
@@ -127,6 +129,7 @@ public class TelegramService implements ITelegramService {
                         transaction.getShippingCost(), BigDecimal.ZERO)),
                 formatCurrency(transaction.getGrandTotal()),
                 formatDate(transaction.getDeliveryDate()),
+                transaction.getNotes(),
                 formatDateTime(LocalDateTime.now())
         );
     }
